@@ -38,6 +38,7 @@ export default function Game() {
     isError: false,
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const initializeCards = () => {
     const duplicatedCats = [...cats, ...cats];
@@ -76,7 +77,6 @@ export default function Game() {
   const handleStartGame = () => {
     playAudio("click");
     setGameStarted(true);
-    initializeCards();
     setTime(TIME);
     setIsGameOver(false);
     setFlippedCards([]);
@@ -98,12 +98,13 @@ export default function Game() {
 
   const handleSubmit = async () => {
     playAudio("click");
-
+    setIsLoading(true);
     if (!name.trim()) {
       setNameError({
         isError: true,
         message: "Name is required",
       });
+      setIsLoading(false);
       return;
     }
 
@@ -112,6 +113,7 @@ export default function Game() {
         isError: true,
         message: "Name is already taken",
       });
+      setIsLoading(false);
       return;
     }
     try {
@@ -145,6 +147,8 @@ export default function Game() {
     } catch (error) {
       console.error(error);
       showToast("Failed to submit score", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -263,7 +267,7 @@ export default function Game() {
                         src={catLogo}
                         alt="cat"
                         fill
-                        sizes="100vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-contain"
                       />
                     </div>
@@ -281,7 +285,7 @@ export default function Game() {
                       src={cat}
                       alt="cat"
                       fill
-                      sizes="100vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover"
                     />
                   </div>
@@ -299,6 +303,7 @@ export default function Game() {
               setName={setName}
               nameError={nameError}
               setNameError={setNameError}
+              isLoading={isLoading}
             />
           )}
         </>

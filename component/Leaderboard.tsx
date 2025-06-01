@@ -32,7 +32,9 @@ export default function Leaderboard() {
       const response = await fetch(`/api/scores?page=${page}&limit=10`);
       if (response.ok) {
         const data = await response.json();
-        setScores((prevScores) => [...prevScores, ...data]);
+        setScores((prevScores) =>
+          page === 1 ? data : [...prevScores, ...data],
+        );
         if (data.length === 10) {
           setHasMore(true);
         } else {
