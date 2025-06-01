@@ -14,7 +14,7 @@ export default function Header() {
       </div>
       <Link
         href="/leaderboard"
-        className="relative flex items-center gap-1 text-xs font-bold after:absolute after:inset-1 after:-bottom-0.5 after:border-dashed hover:after:border-b"
+        className="relative flex items-center gap-1 text-xs font-bold after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
       >
         <Image src={trophy} alt="trophy" width={16} height={16} />
         Leaderboard

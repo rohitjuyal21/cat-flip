@@ -7,6 +7,7 @@ import silver from "@/public/images/silver.png";
 import bronze from "@/public/images/bronze.png";
 import Loading from "./Loading";
 import { playAudio } from "@/utils/playAudio";
+import Link from "next/link";
 
 interface Score {
   _id: string;
@@ -90,21 +91,39 @@ export default function Leaderboard() {
               </tr>
             </thead>
             <tbody className="divide-y-4 divide-dashed divide-black text-xs">
-              {scores.map((score, index) => (
-                <tr key={score._id}>
-                  <td className="w-36 p-3 text-left">
-                    <div className="flex w-8 items-center justify-end gap-1">
-                      {medal(index)} {index + 1}
+              {scores.length > 0 ? (
+                scores.map((score, index) => (
+                  <tr key={score._id}>
+                    <td className="w-36 p-3 text-left">
+                      <div className="flex w-8 items-center justify-end gap-1">
+                        {medal(index)} {index + 1}
+                      </div>
+                    </td>
+                    <td className="p-3 text-left">{score.name}</td>
+                    <td className="w-36 p-3 text-right">{score.score}</td>
+                    <td className="w-36 p-3 text-right">{score.timeTaken}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="px-3 py-6 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <span className="max-w-md text-center text-xs">
+                        Leaderboard is empty. Start playing to add your name.
+                      </span>
+                      <Link
+                        href="/"
+                        className="relative z-10 flex-1 cursor-pointer bg-blue-500/90 px-4 py-2 text-white shadow-[inset_-4px_-4px_0px_0px_#1d4ed8] before:absolute before:inset-0 before:-inset-x-1 before:-z-10 before:border-x-4 before:border-black after:absolute after:inset-0 after:-inset-y-1 after:-z-10 after:border-y-4 after:border-black hover:bg-blue-600/80 hover:shadow-[inset_-6px_-6px_0px_0px_#1d4ed8] active:shadow-[inset_4px_4px_0px_0px_#1d4ed8]"
+                      >
+                        Start Playing
+                      </Link>
                     </div>
                   </td>
-                  <td className="p-3 text-left">{score.name}</td>
-                  <td className="w-36 p-3 text-right">{score.score}</td>
-                  <td className="w-36 p-3 text-right">{score.timeTaken}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-          {hasMore && (
+          {hasMore && scores.length > 0 && (
             <button
               onClick={handleLoadMore}
               className="relative z-10 flex-1 cursor-pointer bg-blue-500/90 px-4 py-2 text-white shadow-[inset_-4px_-4px_0px_0px_#1d4ed8] before:absolute before:inset-0 before:-inset-x-1 before:-z-10 before:border-x-4 before:border-black after:absolute after:inset-0 after:-inset-y-1 after:-z-10 after:border-y-4 after:border-black hover:bg-blue-600/80 hover:shadow-[inset_-6px_-6px_0px_0px_#1d4ed8] active:shadow-[inset_4px_4px_0px_0px_#1d4ed8]"

@@ -6,6 +6,7 @@ import TimeProgressBar from "../TimeProgressBar";
 import Loading from "../Loading";
 import GameOverModal from "./GameOverModal";
 import { showToast } from "@/utils/toast";
+import pokeball from "@/public/images/pokeball.png";
 
 const pokemon = [
   "/images/pokemon1.png",
@@ -259,7 +260,7 @@ export default function Game() {
                   >
                     <div className="size-10 md:size-14">
                       <Image
-                        src="/images/pokeball.png"
+                        src={pokeball}
                         alt="pikachu"
                         width={60}
                         height={60}
