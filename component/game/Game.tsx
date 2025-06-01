@@ -6,21 +6,21 @@ import TimeProgressBar from "../TimeProgressBar";
 import Loading from "../Loading";
 import GameOverModal from "./GameOverModal";
 import { showToast } from "@/utils/toast";
-import pokeball from "@/public/images/pokeball.png";
+import catLogo from "@/public/images/cat-logo.png";
 
-const pokemon = [
-  "/images/pokemon1.png",
-  "/images/pokemon2.png",
-  "/images/pokemon3.png",
-  "/images/pokemon4.png",
-  "/images/pokemon5.png",
-  "/images/pokemon6.png",
-  "/images/pokemon7.png",
-  "/images/pokemon8.png",
-  "/images/pokemon9.png",
-  "/images/pokemon10.png",
-  "/images/pokemon11.png",
-  "/images/pokemon12.png",
+const cats = [
+  "/images/cat1.png",
+  "/images/cat2.png",
+  "/images/cat3.png",
+  "/images/cat4.png",
+  "/images/cat5.png",
+  "/images/cat6.png",
+  "/images/cat7.png",
+  "/images/cat8.png",
+  "/images/cat9.png",
+  "/images/cat10.png",
+  "/images/cat11.png",
+  "/images/cat12.png",
 ];
 
 const TIME = 90;
@@ -40,8 +40,8 @@ export default function Game() {
   });
 
   const initializeCards = () => {
-    const duplicatedPokemon = [...pokemon, ...pokemon];
-    const shuffledCards = duplicatedPokemon.sort(() => Math.random() - 0.5);
+    const duplicatedCats = [...cats, ...cats];
+    const shuffledCards = duplicatedCats.sort(() => Math.random() - 0.5);
     setCards(shuffledCards);
   };
 
@@ -231,7 +231,7 @@ export default function Game() {
               </div>
             </div>
             <div className="grid grid-cols-4 justify-center gap-4 md:grid-cols-6">
-              {cards.map((pokemon, index) => (
+              {cards.map((cat, index) => (
                 <div
                   key={index}
                   onClick={() => handleCardClick(index)}
@@ -258,12 +258,13 @@ export default function Game() {
                       backfaceVisibility: "hidden",
                     }}
                   >
-                    <div className="size-10 md:size-14">
+                    <div className="relative size-12 md:size-20">
                       <Image
-                        src={pokeball}
-                        alt="pikachu"
-                        width={60}
-                        height={60}
+                        src={catLogo}
+                        alt="cat"
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
                       />
                     </div>
                   </div>
@@ -277,10 +278,11 @@ export default function Game() {
                     }}
                   >
                     <Image
-                      src={pokemon}
-                      alt="pikachu"
-                      width={100}
-                      height={100}
+                      src={cat}
+                      alt="cat"
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
                     />
                   </div>
                 </div>

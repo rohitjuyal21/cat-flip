@@ -6,27 +6,27 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "PokeFlip",
+  title: "CatFlip",
   description:
-    "PokeFlip is a Pokémon-themed memory card game where you flip cards, match Pokémon pairs, and beat your high score. Fun, simple, and nostalgic — Gotta match 'em all!",
+    "CatFlip is a Cat-themed memory card game where you flip cards, match Cat pairs, and beat your high score.",
   icons: {
-    icon: "/images/pokeball.png",
+    icon: "/images/cat-logo.png",
   },
   openGraph: {
     images: "/images/og-image.png",
-    title: "PokeFlip",
+    title: "CatFlip",
     description:
-      "PokeFlip is a Pokémon-themed memory card game where you flip cards, match Pokémon pairs, and beat your high score. Fun, simple, and nostalgic — Gotta match 'em all!",
-    url: "https://poke-flip.vercel.app",
-    siteName: "PokeFlip",
+      "CatFlip is a Cat-themed memory card game where you flip cards, match Cat pairs, and beat your high score.",
+    url: "https://cat-flip.vercel.app",
+    siteName: "CatFlip",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PokeFlip",
+    title: "CatFlip",
     description:
-      "PokeFlip is a Pokémon-themed memory card game where you flip cards, match Pokémon pairs, and beat your high score. Fun, simple, and nostalgic — Gotta match 'em all!",
+      "CatFlip is a Cat-themed memory card game where you flip cards, match Cat pairs, and beat your high score.",
     images: "/images/og-image.png",
   },
 };

@@ -1,9 +1,9 @@
 import Leaderboard from "@/component/Leaderboard";
 
 export const metadata = {
-  title: "Leaderboard | PokeFlip",
+  title: "Leaderboard | CatFlip",
   description:
-    "Check out the top scorers in PokeFlip! See who matched the most Pokémon pairs the fastest and claimed the top spot on the leaderboard.",
+    "Check out the top scorers in CatFlip! See who matched the most Cat pairs the fastest and claimed the top spot on the leaderboard.",
 };
 
 export default async function page() {
