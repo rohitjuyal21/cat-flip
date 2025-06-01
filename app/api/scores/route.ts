@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const user = await User.find()
-      .sort({ score: -1, timeTaken: 1 })
+      .sort({ score: -1, timeTaken: 1, _id: 1 })
       .select("name score timeTaken")
       .skip((page - 1) * limit)
       .limit(limit)
