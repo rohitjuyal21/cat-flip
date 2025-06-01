@@ -1,9 +1,15 @@
-import Loading from "@/component/Loading";
+import Leaderboard from "@/component/Leaderboard";
 
-export default function Leaderboard() {
+export const metadata = {
+  title: "Leaderboard | PokeFlip",
+  description:
+    "Check out the top scorers in PokeFlip! See who matched the most Pokémon pairs the fastest and claimed the top spot on the leaderboard.",
+};
+
+export default async function page() {
   return (
-    <div className="font-press-start-2p flex h-screen items-center justify-center">
-      <Loading />
+    <div className="flex flex-1 flex-col">
+      <Leaderboard />
     </div>
   );
 }

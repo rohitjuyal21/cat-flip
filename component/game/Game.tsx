@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-
 import { playAudio } from "@/utils/playAudio";
 import TimeProgressBar from "../TimeProgressBar";
 import Loading from "../Loading";
 import GameOverModal from "./GameOverModal";
+import { showToast } from "@/utils/toast";
 
 const pokemon = [
   "/images/pokemon1.png",
@@ -32,6 +32,11 @@ export default function Game() {
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState({
+    isError: false,
+    message: "",
+  });
 
   const initializeCards = () => {
     const duplicatedPokemon = [...pokemon, ...pokemon];
@@ -52,7 +57,6 @@ export default function Game() {
     setFlippedCards(newFlippedCards);
     if (newFlippedCards.length === 2) {
       const [firstCard, secondCard] = newFlippedCards;
-
       if (cards[firstCard] === cards[secondCard]) {
         setTimeout(() => {
           playAudio("success");
@@ -91,14 +95,56 @@ export default function Game() {
     initializeCards();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     playAudio("click");
-    setGameStarted(false);
-    setIsGameOver(false);
-    setFlippedCards([]);
-    setMatchedCards([]);
-    setScore(0);
-    initializeCards();
+
+    if (!name.trim()) {
+      setNameError({
+        isError: true,
+        message: "Name is required",
+      });
+      return;
+    }
+
+    if (!(await isUniqueName(name.trim()))) {
+      setNameError({
+        isError: true,
+        message: "Name is already taken",
+      });
+      return;
+    }
+    try {
+      const response = await fetch("/api/submit-score", {
+        method: "POST",
+        body: JSON.stringify({
+          name: name.trim(),
+          score,
+          timeTaken: TIME - time,
+          timeLeft: time,
+          isWin: score === 120,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit score");
+      }
+
+      showToast("Score submitted successfully", "success");
+      setGameStarted(false);
+      setIsGameOver(false);
+      setFlippedCards([]);
+      setMatchedCards([]);
+      setScore(0);
+      setTime(TIME);
+      initializeCards();
+      setName("");
+      setNameError({
+        isError: false,
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+      showToast("Failed to submit score", "error");
+    }
   };
 
   const handlePlayAgain = () => {
@@ -110,6 +156,11 @@ export default function Game() {
     setScore(0);
     setGameStarted(false);
     initializeCards();
+    setName("");
+    setNameError({
+      isError: false,
+      message: "",
+    });
   };
 
   useEffect(() => {
@@ -125,6 +176,20 @@ export default function Game() {
     return () => clearInterval(timer);
   }, [time, gameStarted]);
 
+  const isUniqueName = async (name: string) => {
+    try {
+      const response = await fetch(`/api/unique?name=${name}`);
+      if (!response.ok) {
+        throw new Error("Failed to check unique name");
+      }
+      const data = await response.json();
+      return data.unique;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (matchedCards.length === cards.length && cards.length > 0) {
       setIsGameOver(true);
@@ -137,7 +202,7 @@ export default function Game() {
   }, []);
 
   return (
-    <div className="font-press-start-2p relative mx-auto flex w-full max-w-screen-lg flex-1 flex-col items-center justify-center px-6 pb-6">
+    <div className="relative mx-auto flex w-full max-w-screen-lg flex-1 flex-col items-center justify-center px-6 pb-6">
       {cards.length > 0 ? (
         <>
           <div className="mt-8 flex w-full flex-col gap-8">
@@ -227,6 +292,10 @@ export default function Game() {
               score={score}
               handleSubmit={handleSubmit}
               handlePlayAgain={handlePlayAgain}
+              name={name}
+              setName={setName}
+              nameError={nameError}
+              setNameError={setNameError}
             />
           )}
         </>

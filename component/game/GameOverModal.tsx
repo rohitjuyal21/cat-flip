@@ -7,11 +7,22 @@ export default function GameOverModal({
   score,
   handleSubmit,
   handlePlayAgain,
+  name,
+  setName,
+  nameError,
+  setNameError,
 }: {
   timeLeft: number;
   score: number;
   handleSubmit: () => void;
   handlePlayAgain: () => void;
+  name: string;
+  setName: (name: string) => void;
+  nameError: {
+    isError: boolean;
+    message: string;
+  };
+  setNameError: (nameError: { isError: boolean; message: string }) => void;
 }) {
   const isWin = timeLeft > 0 && score === 120;
 
@@ -28,7 +39,7 @@ export default function GameOverModal({
   );
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="m-4 flex w-full max-w-lg flex-col items-center border-4 border-black bg-white p-4 md:p-6">
+      <div className="m-4 flex w-full max-w-xl flex-col items-center border-4 border-black bg-white p-4 md:p-6">
         <div className="mb-6 text-xl font-bold">{message}</div>
         <div className="mb-3 text-3xl font-bold">{score}</div>
         <div className="mb-4 font-medium">Final Score</div>
@@ -40,10 +51,27 @@ export default function GameOverModal({
           <input
             type="text"
             id="name"
-            className="mt-2 w-full border-none px-2 py-1.5 text-sm outline-4 outline-black outline-dashed"
+            autoFocus
+            placeholder="Enter a unique name"
+            className={`mt-2 w-full border-none px-2 py-1.5 text-sm outline-4 outline-dashed ${
+              nameError.isError ? "outline-red-500" : "outline-black"
+            }`}
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setNameError({
+                isError: false,
+                message: "",
+              });
+            }}
           />
+          {nameError.isError && (
+            <div className="mt-2 text-[10px] text-red-500">
+              {nameError.message}
+            </div>
+          )}
         </div>
-        <div className="mt-6 flex w-full gap-6">
+        <div className="mt-7 flex w-full gap-6">
           <button
             onClick={handleSubmit}
             className="relative z-10 flex-1 cursor-pointer bg-lime-500 px-4 py-2 text-white shadow-[inset_-4px_-4px_0px_0px_#4aa52e] before:absolute before:inset-0 before:-inset-x-1 before:-z-10 before:border-x-4 before:border-black after:absolute after:inset-0 after:-inset-y-1 after:-z-10 after:border-y-4 after:border-black hover:bg-lime-500/90 hover:shadow-[inset_-6px_-6px_0px_0px_#4aa52e] active:shadow-[inset_4px_4px_0px_0px_#4aa52e]"
