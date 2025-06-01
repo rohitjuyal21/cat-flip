@@ -113,6 +113,9 @@ export default function Leaderboard() {
                       </span>
                       <Link
                         href="/"
+                        onClick={() => {
+                          playAudio("click");
+                        }}
                         className="relative z-10 flex-1 cursor-pointer bg-blue-500/90 px-4 py-2 text-white shadow-[inset_-4px_-4px_0px_0px_#1d4ed8] before:absolute before:inset-0 before:-inset-x-1 before:-z-10 before:border-x-4 before:border-black after:absolute after:inset-0 after:-inset-y-1 after:-z-10 after:border-y-4 after:border-black hover:bg-blue-600/80 hover:shadow-[inset_-6px_-6px_0px_0px_#1d4ed8] active:shadow-[inset_4px_4px_0px_0px_#1d4ed8]"
                       >
                         Start Playing
