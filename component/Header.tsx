@@ -3,7 +3,7 @@ import Image from "next/image";
 import catLogo from "@/public/images/cat-logo.png";
 import trophy from "@/public/images/trophy.png";
 import Link from "next/link";
-
+import github from "@/public/images/github.png";
 export default function Header() {
   return (
     <header className="font-press-start-2p flex items-center justify-between p-4">
@@ -20,13 +20,40 @@ export default function Header() {
           </div>{" "}
         </Link>
       </div>
-      <Link
-        href="/leaderboard"
-        className="relative flex items-center gap-1 text-xs font-bold after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
-      >
-        <Image src={trophy} alt="trophy" width={16} height={16} />
-        Leaderboard
-      </Link>
+      <div className="hidden items-center gap-4 sm:flex">
+        <Link
+          href="/leaderboard"
+          className="relative flex items-center gap-2 text-xs after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
+        >
+          <Image src={trophy} alt="trophy" width={16} height={16} />
+          Leaderboard
+        </Link>
+        <Link
+          href="https://github.com/rohitjuyal21/cat-flip"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center gap-2 text-xs after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
+        >
+          <Image src={github} alt="github" width={16} height={16} />
+          Source
+        </Link>
+      </div>
+      <div className="flex items-center gap-4 sm:hidden">
+        <Link
+          href="/leaderboard"
+          className="relative flex items-center gap-2 text-xs after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
+        >
+          <Image src={trophy} alt="trophy" width={24} height={24} />
+        </Link>
+        <Link
+          href="https://github.com/rohitjuyal21/cat-flip"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center gap-2 text-xs after:absolute after:inset-x-0 after:-inset-y-2 after:-bottom-1 after:border-dashed hover:after:border-b-2"
+        >
+          <Image src={github} alt="github" width={24} height={24} />
+        </Link>
+      </div>
     </header>
   );
 }
