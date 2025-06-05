@@ -45,6 +45,27 @@ export async function POST(req: NextRequest) {
   const timeLeft = Math.max(0, TIME - timeTaken); // Use the same TIME constant as frontend
   const isWin = session.score === 120;
 
+  const MAX_SCORE = 120;
+  const MAX_TIME = TIME;
+  const MAX_TIME_LEFT = TIME;
+
+  if (
+    typeof name !== "string" ||
+    name.trim() === "" ||
+    typeof session.score !== "number" ||
+    session.score < 0 ||
+    session.score > MAX_SCORE ||
+    typeof timeTaken !== "number" ||
+    timeTaken < 0 ||
+    timeTaken > MAX_TIME ||
+    typeof timeLeft !== "number" ||
+    timeLeft < 0 ||
+    timeLeft > MAX_TIME_LEFT ||
+    typeof isWin !== "boolean"
+  ) {
+    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+  }
+
   // Save user score
   await User.create({
     name: name.trim(),
