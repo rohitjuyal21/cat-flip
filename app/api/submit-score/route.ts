@@ -1,18 +1,61 @@
-import dbConnect from "@/lib/dbConnect";
-import { User } from "@/model/User";
 import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/lib/dbConnect";
+import { verifyGameToken } from "@/lib/jwt";
+import { GameSession } from "@/model/GameSession";
+import { User } from "@/model/User";
+import { TIME } from "@/lib/constants";
 
 export async function POST(req: NextRequest) {
-  try {
-    await dbConnect();
-    const { name, score, timeTaken, timeLeft, isWin } = await req.json();
-    const user = await User.create({ name, score, timeTaken, timeLeft, isWin });
-    return NextResponse.json({ user });
-  } catch (error) {
-    console.error(error);
+  await dbConnect();
+
+  const token = req.cookies.get("game_token")?.value;
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { valid, decoded, reason } = verifyGameToken(token);
+  if (!valid || !decoded?.sessionId) {
     return NextResponse.json(
-      { error: "Failed to submit score" },
-      { status: 500 },
+      { error: reason || "Invalid session" },
+      { status: 401 },
     );
   }
+
+  const session = await GameSession.findOne({ sessionId: decoded.sessionId });
+  if (!session) {
+    return NextResponse.json({ error: "Session not found" }, { status: 400 });
+  }
+
+  if (!session.completed || !session.endedAt) {
+    return NextResponse.json(
+      { error: "Game not yet completed" },
+      { status: 400 },
+    );
+  }
+
+  const body = await req.json();
+  const { name } = body;
+
+  if (typeof name !== "string" || name.trim() === "") {
+    return NextResponse.json({ error: "Invalid name" }, { status: 400 });
+  }
+
+  // Use the timeTaken from the session instead of calculating it
+  const timeTaken = session.timeTaken || 0;
+  const timeLeft = Math.max(0, TIME - timeTaken); // Use the same TIME constant as frontend
+  const isWin = session.score === 120;
+
+  // Save user score
+  await User.create({
+    name: name.trim(),
+    score: session.score,
+    timeTaken,
+    timeLeft,
+    isWin,
+  });
+
+  // Clear token cookie
+  const res = NextResponse.json({ success: true });
+  res.cookies.delete("game_token");
+  return res;
 }

@@ -7,6 +7,7 @@ import Loading from "../Loading";
 import GameOverModal from "./GameOverModal";
 import { showToast } from "@/utils/toast";
 import catLogo from "@/public/images/cat-logo.png";
+import { TIME } from "@/lib/constants";
 
 const cats = [
   "/images/cat1.png",
@@ -22,8 +23,6 @@ const cats = [
   "/images/cat11.png",
   "/images/cat12.png",
 ];
-
-const TIME = 90;
 
 export default function Game() {
   const [time, setTime] = useState(TIME);
@@ -46,7 +45,7 @@ export default function Game() {
     setCards(shuffledCards);
   };
 
-  const handleCardClick = (index: number) => {
+  const handleCardClick = async (index: number) => {
     if (
       matchedCards.includes(index) ||
       flippedCards.includes(index) ||
@@ -60,11 +59,19 @@ export default function Game() {
     if (newFlippedCards.length === 2) {
       const [firstCard, secondCard] = newFlippedCards;
       if (cards[firstCard] === cards[secondCard]) {
+        let updatedScore: number;
+        const response = await fetch("/api/flip-success", {
+          method: "POST",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          updatedScore = data.updatedScore;
+        }
         setTimeout(() => {
           playAudio("success");
           setMatchedCards((prev) => [...prev, firstCard, secondCard]);
           setFlippedCards([]);
-          setScore(score + 10);
+          setScore(updatedScore);
         }, 500);
       } else {
         setTimeout(() => {
@@ -74,15 +81,23 @@ export default function Game() {
     }
   };
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
     playAudio("click");
-    setGameStarted(true);
-    setTime(TIME);
-    setIsGameOver(false);
-    setFlippedCards([]);
-    setMatchedCards([]);
-    setScore(0);
-    initializeCards();
+    try {
+      const response = await fetch("/api/start-game");
+      if (!response.ok) {
+        throw new Error("Failed to start game");
+      }
+      setGameStarted(true);
+      setTime(TIME);
+      setIsGameOver(false);
+      setFlippedCards([]);
+      setMatchedCards([]);
+      setScore(0);
+      initializeCards();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRestartGame = () => {
@@ -121,10 +136,6 @@ export default function Game() {
         method: "POST",
         body: JSON.stringify({
           name: name.trim(),
-          score,
-          timeTaken: TIME - time,
-          timeLeft: time,
-          isWin: score === 120,
         }),
       });
       if (!response.ok) {
@@ -168,12 +179,27 @@ export default function Game() {
     });
   };
 
+  const handleCompleteGame = async () => {
+    const timeTaken = TIME - time; // Calculate actual time taken
+
+    const response = await fetch("/api/complete-game", {
+      method: "POST",
+      body: JSON.stringify({
+        timeTaken,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to complete game");
+    }
+  };
+
   useEffect(() => {
     if (!gameStarted) return;
     const timer = setInterval(() => {
       setTime((prev) => prev - 1);
     }, 1000);
     if (time <= 0) {
+      handleCompleteGame();
       clearInterval(timer);
       setIsGameOver(true);
       setGameStarted(false);
@@ -197,6 +223,7 @@ export default function Game() {
 
   useEffect(() => {
     if (matchedCards.length === cards.length && cards.length > 0) {
+      handleCompleteGame();
       setIsGameOver(true);
       setGameStarted(false);
     }
